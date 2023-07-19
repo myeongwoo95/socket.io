@@ -1,5 +1,6 @@
 import express from "express";
 import http from "http";
+import SocketIO from "socket.io";
 
 const port = 3000;
 const app = express();
@@ -18,8 +19,22 @@ app.get("/*", (req, res) => {
 });
 
 const server = http.createServer(app);
-const wss = new WebSocketServer({ server });
+const wss = SocketIO(server);
+// const wss = new WebSocketServer({ server });
 
+// socket.io 방식
+wss.on("connection", (socket) => {
+  socket.on("enter_room", (a, b, c, d, e, f) => {
+    console.log(a, b, c, d, e);
+
+    setTimeout(() => {
+      f();
+    }, 3000);
+  });
+});
+
+/**
+// websocket 방식
 wss.on("connection", (ws, request) => {
   // 소켓 연결됬을때
   console.log("some soket is Connected to Server");
@@ -50,6 +65,7 @@ wss.on("connection", (ws, request) => {
   // 1개의 브라우저에게 발신
   ws.send("Message (hello world) from server");
 });
+*/
 
 server.listen(port, () => {
   console.log(`listening ${port}`);

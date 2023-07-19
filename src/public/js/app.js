@@ -1,46 +1,24 @@
-const messageList = document.querySelector("ul");
-const messageForm = document.querySelector("#message");
-const nickForm = document.querySelector("#nick");
-const ws = new WebSocket(`ws://${window.location.host}`);
+const socket = io();
 
-function makeMessage(type, payload) {
-  const msg = { type, payload };
-  return JSON.stringify(msg);
-}
+const welcome = document.querySelector("#welcome");
+const form = welcome.querySelector("form");
 
-// 소켓이 연결되었을 때
-ws.addEventListener("open", () => {
-  console.log("Connected to Server");
-});
-
-// 소켓이 서버로부터 끊꼈을 때
-ws.addEventListener("close", () => {
-  console.log("Disconnected from the Server");
-});
-
-// 서버로부터 데이터 수신
-ws.addEventListener("message", (message) => {
-  const li = document.createElement("li");
-  li.innerText = message.data;
-  messageList.append(li);
-});
-
-// 데이터 발신
-messageForm.addEventListener("submit", (event) => {
+form.addEventListener("submit", (event) => {
   event.preventDefault();
-  const input = messageForm.querySelector("input");
-  ws.send(makeMessage("new_message", input.value));
-
-  const li = document.createElement("li");
-  li.innerText = `You: ${input.value}`;
-  messageList.append(li);
-
+  const input = form.querySelector("input");
+  // 서버에 발신
+  socket.emit(
+    "enter_room",
+    { payload: input.value },
+    "hello",
+    1995,
+    6,
+    16,
+    // 이 함수는 server에서 실행되는게 아니다. (보안적으로 서버에서 실행되는건 말이안됨)
+    // 서버에서 함수를 동작시키는건 맞지만 실제로 실행되는건 클라이언트이다.
+    () => {
+      console.log("Server is done");
+    }
+  );
   input.value = "";
-});
-
-nickForm.addEventListener("submit", (event) => {
-  event.preventDefault();
-  const input = nickForm.querySelector("input");
-  ws.send(makeMessage("nickname", input.value));
-  alert(`닉네임이 ${input.value}로 변경되었습니다.`);
 });
