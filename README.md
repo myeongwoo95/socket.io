@@ -2,11 +2,19 @@
 
 - npm i socket.io
 - soket.io는 websocket을 사용하지만, websocket을 지원하지 않으면 다른 것을 사용한다. (http long polling)
-- 연결이 끊어졌을때 자동으로 재연결하는 기능을 가지고잇다.
-- 방화벽이나 프록시가 있어도 동작한다.
-- socketIO를 설치하는 것만으로 url이 생긴다. 프론트엔드단에서는 그걸 import하여 socket.io를 사용한다 -> /socket.io/socket.io.js
-- front에서 io라는 funtion이 있는데 이것이 backend socket.io와 연결해주는 함수이다. 놀라운건 그냥 이렇게만 적어주면 됨... const socket = io();
-- socket.io는 웹소켓이 아니라 소켓이다.
+- soket.io는 연결이 끊어졌을때 자동으로 재연결하는 기능을 가지고잇다. 소켓이 연결된 상태에서 서버가 다운되면 클라이언트에서 F12로 확인가능
+- soket.io는 방화벽이나 프록시가 있어도 동작한다.
+- 백엔드에서 soket.io는 설치하는 것만으로 url이 생기는데(/socket.io/socket.io.js). 프론트에서는 그걸 import하여 socket.io를 설치한다.
+  <pre>
+  <script src="/socket.io/socket.io.js"></script>
+  </pre>
+- soket.io는 클라이언트에서 백엔드로 연결하는것이 굉장히 간단하다. 프론트에서 const socket = io(); 만해주면된다.
+- 참고로 socket.io는 웹소켓이 아니라 소켓이다.
 - socket.io는 방(room) 개념이 있다.
-- socket.io는 커스텀 이벤트를 마음대로 만들 수 있고, string뿐만 아니라 오브젝트도 보낼수있다. (socket.io가 string으로 알아서 바꿔줌)
-- 서버가 꺼지고 웹에서 F12를 하면 계속 connection하려고 시도중임을 확인할 수 있다.
+- ★★★ socket.io는 emit기능으로 이벤트를 마음대로 만들 수 있고, 데이터도 string뿐만 아니라 오브젝트도 보낼수있다.
+  (이것은 socket.io가 string으로 알아서 바꿔주는것이다.)
+- ★★★ socket.io는 클라이언트가 백엔드에서 작업이 끝나고 클라이언트에서 실행되야하는 함수를 실행시킬 수 있는 trigger도 보낼 수 있다.
+  심지어 이 함수는 클라이언트 정의하고 클라이언트에서 동작하지만 백엔드에서 실행시키고 파라미터도 백엔드에서 넘길수가있다.
+  (함수를 마지막 argument로 보내주면된다.)
+- disconnecting과 disconnect는 다르다. disconnect는 연결이 완전히 끊어졌다는 뜻이고, disconnecting과 방을 나가기전이다.
+- emit 헷갈릴때가 있는데 클라이언트에서 A를 emit하면 백엔드에서 A구현해주고, 백엔드에서도 A를 emit하면 클라이언트에서도 A를 구현해줘야한다.
