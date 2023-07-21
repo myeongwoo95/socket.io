@@ -1,7 +1,8 @@
 /** Web Server */
-import express from "express";
 import http from "http";
-import SocketIO from "socket.io";
+import { Server } from "socket.io";
+import { instrument } from "@socket.io/admin-ui";
+import express from "express";
 
 const port = 3000;
 const app = express();
@@ -21,7 +22,7 @@ app.get("/*", (req, res) => {
 
 /** Socket Server */
 const server = http.createServer(app);
-const wss = SocketIO(server);
+const wss = new Server(server);
 
 function getPublicRooms() {
   const publicRooms = [];
@@ -64,6 +65,7 @@ wss.on("connection", (socket) => {
     socket.rooms.forEach((room) => {
       socket.to(room).emit("bye", {
         socketNickname: socket.nickname,
+        numberOfUsersInRoom: getCountRoom(room) - 1,
       });
     });
   });
@@ -87,10 +89,12 @@ wss.on("connection", (socket) => {
 
     socket.emit("welcomeToMe", {
       roomName: data.roomName,
+      numberOfUsersInRoom: getCountRoom(data.roomName),
     });
 
     socket.to(data.roomName).emit("welcomeToOthers", {
       socketNickname: socket.nickname,
+      numberOfUsersInRoom: getCountRoom(data.roomName),
     });
 
     wss.sockets.emit("change_publicRooms", {

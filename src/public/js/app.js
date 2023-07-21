@@ -10,6 +10,8 @@ const room_h3 = room.querySelector("h3");
 const room_ul = room.querySelector("ul");
 
 room.hidden = true;
+
+// 서버에서 roomName을 주는 것을 사용하는 코드는 그냥 그런 코드가 가능하다는걸 보여주기 위함
 let roomName;
 
 /** 화면에 메세지 추가하는 함수 */
@@ -62,16 +64,19 @@ welcome_form.addEventListener("submit", (event) => {
 
 /** 서버에서 emit한 welcomeToMe 구현 */
 socket.on("welcomeToMe", (data) => {
+  room_h3.innerText = `방 이름: ${roomName} (현재 방 인원 수: ${data.numberOfUsersInRoom})`;
   addMessage(`방 이름 ${data.roomName}에 참가하였습니다.`);
 });
 
 /** 서버에서 emit한 welcomeToOthers 구현 */
 socket.on("welcomeToOthers", (data) => {
+  room_h3.innerText = `방 이름: ${roomName} (현재 방 인원 수: ${data.numberOfUsersInRoom})`;
   addMessage(`${data.socketNickname}님이 방에 참가하였습니다.`);
 });
 
 /** 서버에서 emit한 bye를 구현 */
 socket.on("bye", (data) => {
+  room_h3.innerText = `방 이름: ${roomName} (현재 방 인원 수: ${data.numberOfUsersInRoom})`;
   addMessage(`${data.socketNickname}님이 방에 떠났습니다.`);
 });
 

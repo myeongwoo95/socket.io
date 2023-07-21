@@ -19,11 +19,32 @@
   (함수를 마지막 argument로 보내주면된다.)
 - disconnecting과 disconnect는 다르다. disconnect는 연결이 완전히 끊어졌다는 뜻이고, disconnecting과 방을 나가기전이다.
 - emit 헷갈릴때가 있는데 클라이언트에서 A를 emit하면 백엔드에서 A구현해주고, 백엔드에서도 A를 emit하면 클라이언트에서도 A를 구현해줘야한다.
-
-##### Adapter
-
 - 기본적으로 서버가 꺼지면 모든 room과 socket이 사라진다.
-- 3대의 소켓서버는 같은 메모리 풀을 공유하지않는다.
+- ★★★ 소켓서버에만 국한된 이야기는 아니지만, 당연하게도 3대의 소켓서버는 같은 메모리 풀을 공유하지않는다.
+  (어댑터를 변경해야함 메모리에서 -> 몽고DB, query 코드도 개발자가 직접 짜야하나? 아니면 어댑터만 변경하면 알아서 동작하는건가?)
+
+##### admin 페이지
+
+- $ npm i @socket.io/admin-ui
+- 서버에서
+  <pre>
+  const { instrument } = require("@socket.io/admin-ui"); 
+  or 
+  import { instrument } from "@socket.io/admin-ui"
+  </pre>
+
+  위처럼 instrument 가져 온 후 기존 socket.io 가져오는 코드를 변경
+  <pre>
+  첫번째 변경
+  // import SocketIO from "socket.io";
+  import { Server } from "socket.io";
+  
+  두번째 번경 변경
+  // const server = http.createServer(app);
+  // const wss = SocketIO(server);
+  
+  
+  </pre>
 
 ##### 메서드 목록
 
@@ -51,7 +72,7 @@ ws(io).sockets.emit()
 
 // 개인 메세지 보내기 (모든 소켓은 고유의 private room을 가지고 있어서 가능)
 
-</>
+</pre>
 
 ##### TODO
 
