@@ -7,13 +7,14 @@ import express from "express";
 const port = 3000;
 const app = express();
 
-app.set("view engine", "pug");
+app.set("view engine", "ejs");
 app.set("views", __dirname + "/views");
 app.use("/public", express.static(__dirname + "/public"));
 
 app.get("/", (req, res) => {
   const publicRooms = getPublicRooms();
-  res.render("home", { publicRooms });
+  const numOfPublicRooms = getCountPublicRooms();
+  res.render("home", { publicRooms, numOfPublicRooms });
 });
 
 app.get("/*", (req, res) => {
@@ -119,7 +120,10 @@ wss.on("connection", (socket) => {
       msg: data.msg,
     });
 
-    done({ msg: data.msg });
+    done({
+      socketNickname: socket.nickname,
+      msg: data.msg,
+    });
   });
 });
 
