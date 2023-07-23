@@ -25,6 +25,17 @@ app.get("/*", (req, res) => {
 const server = http.createServer(app);
 const wss = new Server(server);
 
+function getUsersByRoomname(roomName) {
+  const users = {};
+  wss.sockets.adapter.rooms.get(roomName).forEach((socketId) => {
+    const user = {};
+    user.nickname = wss.sockets.sockets.get(socketId).nickname;
+    user.socketId = wss.sockets.sockets.get(socketId).id;
+    users[socketId] = user;
+  });
+  return users;
+}
+
 function getPublicRooms() {
   const publicRooms = [];
 
@@ -53,20 +64,22 @@ function getCountRoom(roomName) {
 }
 
 wss.on("connection", (socket) => {
-  // 최초의 nickname Anonymous
   socket["nickname"] = "Anonymous";
 
   /** 1. 모든 이벤트를 감지 */
   socket.onAny((event) => {
-    console.log(`Socket Event: ${event}`);
+    // console.log(`Socket Event: ${event}`);
   });
 
   /** 2. disconnecting */
   socket.on("disconnecting", () => {
+    // 소켓이 현재 참가하고 있는 모든 방에 대해 반복문
     socket.rooms.forEach((room) => {
       socket.to(room).emit("bye", {
         socketNickname: socket.nickname,
         numberOfUsersInRoom: getCountRoom(room) - 1,
+        users: getUsersByRoomname(room),
+        socketIdToBeDeleted: socket.id,
       });
     });
   });
@@ -78,24 +91,28 @@ wss.on("connection", (socket) => {
     });
   });
 
-  /** enter_room emit */
+  /** 4. enter_room emit */
   socket.on("enter_room", (data, done) => {
     socket.join(data.roomName);
 
     if (socket.rooms.has(data.roomName)) {
       done({
         roomName: data.roomName,
+        socketId: socket.id,
+        socketNickname: socket.nickname,
       });
     }
 
     socket.emit("welcomeToMe", {
       roomName: data.roomName,
       numberOfUsersInRoom: getCountRoom(data.roomName),
+      users: getUsersByRoomname(data.roomName),
     });
 
     socket.to(data.roomName).emit("welcomeToOthers", {
       socketNickname: socket.nickname,
       numberOfUsersInRoom: getCountRoom(data.roomName),
+      users: getUsersByRoomname(data.roomName),
     });
 
     wss.sockets.emit("change_publicRooms", {
@@ -107,9 +124,15 @@ wss.on("connection", (socket) => {
   socket.on("save_nickname", (data, done) => {
     const beforeNickname = socket["nickname"];
     socket["nickname"] = data.nickname;
+
     done({
       beforeNickname,
       afterNickname: data.nickname,
+      users: getUsersByRoomname(data.roomName),
+    });
+
+    socket.to(data.roomName).emit("save_nickname", {
+      users: getUsersByRoomname(data.roomName),
     });
   });
 

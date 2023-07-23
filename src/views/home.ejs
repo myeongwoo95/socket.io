@@ -14,7 +14,7 @@
       <form>
         <input
           class="custom-input"
-          placeholder="room name..."
+          placeholder=" Room name..."
           required
           type="text"
         />
@@ -25,39 +25,35 @@
 
       <ul>
         <% publicRooms.forEach(roomName => { %>
-        <li><%= roomName %></li>
+        <li>
+          <span><%= roomName %></span>
+          <button class="w-btn w-btn-blue">Enter</button>
+        </li>
         <% }); %>
       </ul>
     </div>
 
     <div id="room">
-      <h3></h3>
+      <h1></h1>
+      <h2></h2>
       <ul></ul>
       <form id="name">
         <input
           class="custom-input"
-          placeholder="nickname..."
+          placeholder=" Your nickname..."
           required
           type="text"
         />
-        <button class="w-btn w-btn-indigo">Save</button>
-      </form>
-      <form id="message">
-        <input
-          class="custom-input"
-          placeholder="message..."
-          required
-          type="text"
-        />
-        <button class="w-btn w-btn-indigo">Send</button>
+        <button class="w-btn w-btn-indigo">Change</button>
       </form>
     </div>
 
     <div id="container">
       <aside>
         <header>
-          <input type="text" placeholder="search" />
+          <input type="text" placeholder="search..." />
         </header>
+
         <ul>
           <li>
             <img src="/public/img/no-profile-icon1.png" alt="" />
@@ -69,102 +65,9 @@
               </h3>
             </div>
           </li>
-          <li>
-            <img
-              src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/1940306/chat_avatar_02.jpg"
-              alt=""
-            />
-            <div>
-              <h2>Prénom Nom</h2>
-              <h3>
-                <span class="status green"></span>
-                online
-              </h3>
-            </div>
-          </li>
-          <li>
-            <img
-              src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/1940306/chat_avatar_03.jpg"
-              alt=""
-            />
-            <div>
-              <h2>Prénom Nom</h2>
-              <h3>
-                <span class="status orange"></span>
-                offline
-              </h3>
-            </div>
-          </li>
-          <li>
-            <img
-              src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/1940306/chat_avatar_04.jpg"
-              alt=""
-            />
-            <div>
-              <h2>Prénom Nom</h2>
-              <h3>
-                <span class="status green"></span>
-                online
-              </h3>
-            </div>
-          </li>
-
-          <li>
-            <img
-              src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/1940306/chat_avatar_08.jpg"
-              alt=""
-            />
-            <div>
-              <h2>Prénom Nom</h2>
-              <h3>
-                <span class="status green"></span>
-                online
-              </h3>
-            </div>
-          </li>
-          <li>
-            <img
-              src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/1940306/chat_avatar_09.jpg"
-              alt=""
-            />
-            <div>
-              <h2>Prénom Nom</h2>
-              <h3>
-                <span class="status green"></span>
-                online
-              </h3>
-            </div>
-          </li>
-          <li>
-            <img
-              src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/1940306/chat_avatar_10.jpg"
-              alt=""
-            />
-            <div>
-              <h2>Prénom Nom</h2>
-              <h3>
-                <span class="status orange"></span>
-                offline
-              </h3>
-            </div>
-          </li>
         </ul>
       </aside>
       <main>
-        <header>
-          <img
-            src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/1940306/chat_avatar_01.jpg"
-            alt=""
-          />
-          <div>
-            <h2>Chat with Vincent Porter</h2>
-            <h3>already 1902 messages</h3>
-          </div>
-          <img
-            src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/1940306/ico_star.png"
-            alt=""
-          />
-        </header>
         <ul id="chat">
           <!-- 
           <li class="you">

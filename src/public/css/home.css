@@ -28,6 +28,14 @@
   font-size: 14px;
 }
 
+#welcome ul li {
+  margin-top: 5px;
+}
+
+#welcome ul li span {
+  margin-right: 10px;
+}
+
 #room {
   text-align: center;
   margin-bottom: 20px;
@@ -190,8 +198,7 @@ main header h3 {
   margin: 0;
   list-style-type: none;
   overflow-y: scroll;
-  height: 535px;
-  border-top: 2px solid #fff;
+  height: 645px;
   border-bottom: 2px solid #fff;
 }
 #chat li {
@@ -538,16 +545,4 @@ main footer a {
     height: 300px;
     opacity: 0;
   }
-}
-
-.w-btn-neon2 {
-  position: relative;
-  border: none;
-  min-width: 200px;
-  min-height: 50px;
-  background: linear-gradient(
-    90deg,
-    rgba(129, 230, 217, 1) 0%,
-    rgba(79, 209, 197, 1) 100%
-  );
 }
