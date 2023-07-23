@@ -285,7 +285,6 @@ socket.on("welcomeToOthers", (data) => {
 
 /** 서버에서 emit한 bye를 구현 */
 socket.on("bye", (data) => {
-  console.log("A: 난 두번찍어야 정상");
   room_h1.innerText = `👋Room: ${roomName}`;
   room_h2.innerText = `👩🧑🏾👨🧓 Current Users: ${data.numberOfUsersInRoom}`;
   const msg = `${data.socketNickname}님이 방에 떠났습니다.`;
