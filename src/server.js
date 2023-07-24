@@ -22,15 +22,30 @@ app.get("/*", (req, res) => {
 });
 
 /** Socket Server */
-const server = http.createServer(app);
-const wss = new Server(server);
+const httpServer = http.createServer(app);
+const io = new Server(httpServer, {
+  cors: {
+    origin: ["https://admin/socket.io"],
+    credentials: true,
+  },
+});
+
+instrument(io, {
+  auth: false,
+
+  // auth: {
+  //   type: "basic",
+  //   username: "admin",
+  //   password: "encrypted hash...",
+  // },
+});
 
 function getUsersByRoomname(roomName) {
   const users = {};
-  wss.sockets.adapter.rooms.get(roomName).forEach((socketId) => {
+  io.sockets.adapter.rooms.get(roomName).forEach((socketId) => {
     const user = {};
-    user.nickname = wss.sockets.sockets.get(socketId).nickname;
-    user.socketId = wss.sockets.sockets.get(socketId).id;
+    user.nickname = io.sockets.sockets.get(socketId).nickname;
+    user.socketId = io.sockets.sockets.get(socketId).id;
     users[socketId] = user;
   });
   return users;
@@ -39,13 +54,13 @@ function getUsersByRoomname(roomName) {
 function getPublicRooms() {
   const publicRooms = [];
 
-  // const sids = wss.sockets.adapter.sids;
-  // const rooms = wss.sockets.adapter.rooms;
+  // const sids = io.sockets.adapter.sids;
+  // const rooms = io.sockets.adapter.rooms;
   const {
     sockets: {
       adapter: { sids, rooms },
     },
-  } = wss;
+  } = io;
 
   rooms.forEach((_, key) => {
     if (sids.get(key) === undefined) publicRooms.push(key);
@@ -60,10 +75,10 @@ function getCountPublicRooms() {
 
 function getCountRoom(roomName) {
   // get(roomName)가 undefined일 경우에도 에러 없이 undefined를 반환
-  return wss.sockets.adapter.rooms.get(roomName)?.size;
+  return io.sockets.adapter.rooms.get(roomName)?.size;
 }
 
-wss.on("connection", (socket) => {
+io.on("connection", (socket) => {
   socket["nickname"] = "Anonymous";
 
   /** 1. 모든 이벤트를 감지 */
@@ -86,7 +101,7 @@ wss.on("connection", (socket) => {
 
   /** 3. disconnect */
   socket.on("disconnect", () => {
-    wss.sockets.emit("change_publicRooms", {
+    io.sockets.emit("change_publicRooms", {
       publicRooms: getPublicRooms(),
     });
   });
@@ -115,7 +130,7 @@ wss.on("connection", (socket) => {
       users: getUsersByRoomname(data.roomName),
     });
 
-    wss.sockets.emit("change_publicRooms", {
+    io.sockets.emit("change_publicRooms", {
       publicRooms: getPublicRooms(),
     });
   });
@@ -150,6 +165,6 @@ wss.on("connection", (socket) => {
   });
 });
 
-server.listen(port, () => {
+httpServer.listen(port, () => {
   console.log(`listening ${port}`);
 });

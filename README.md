@@ -27,7 +27,7 @@
 ##### admin 페이지
 
 - $ npm i @socket.io/admin-ui
-- 서버에서
+- 설정 (서버에서)
   <pre>
   const { instrument } = require("@socket.io/admin-ui"); 
   or 
@@ -36,16 +36,26 @@
 
   위처럼 instrument 가져 온 후 기존 socket.io 가져오는 코드를 변경
   <pre>
-  첫번째 변경
-  // import SocketIO from "socket.io";
-  import { Server } from "socket.io";
+    const httpServer = http.createServer(app);
+    const io = new Server(httpServer, {
+      cors: {
+        origin: ["https://admin/socket.io"],
+        credentials: true,
+      },
+    });
   
-  두번째 번경 변경
-  // const server = http.createServer(app);
-  // const wss = SocketIO(server);
+    instrument(io, {
+    auth: false,
   
-  
+    // auth: {
+    // type: "basic",
+    // username: "admin",
+    // password: "encrypted hash...",
+    // },
+    });
   </pre>
+
+- https://admin.socket.io/ 접속해서 serverURL등록 "http://localhost:3000"
 
 ##### 메서드 목록
 
